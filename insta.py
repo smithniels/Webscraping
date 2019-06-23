@@ -20,7 +20,7 @@ print('Module Import = Done \n \n Start the next bit') #\n will create a new lin
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'SundayFunday' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'DCDog' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                    # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
@@ -39,18 +39,20 @@ links=[] #creates an empty list "links"
 source = browser.page_source # Open the source page
 data = bs(source, 'html.parser') # Use beautiful soup to parse it.
 body = data.find('body')         # Search through BeautifulSoup file for <body> tags
-script = body.find('span')       # Within the <body> tags find the <span> tags
-for link in script.findAll('a'): # For the <span> tags, find the <a..>
-     if re.match("/p", link.get('href')):   # Searching for this format <a href="/p/BzDY-D-D8X3/"
-        links.append('https://www.instagram.com'+link.get('href')) # Takes the "/p/BzDY-D-D8X3/"
-result=pd.DataFrame()
-for i in range(len(links)):
-    try:
-        page = urlopen(links[i]).read()
-        data=bs(page, 'html.parser')
-        body = data.find('body')
-        script = body.find('script')
+script = body.find('span')       # Within the <body> tags in "body", find the <span> tags
+for link in script.findAll('a'): # For the <span> tags in "script", find the <a..>
+     if re.match("/p", link.get('href')):   # Searching for this format <a href="/p..."
+        links.append('https://www.instagram.com'+link.get('href')) # Adds those ^ to the links links if true
+
+result = pd.DataFrame()     # Creates an empty dataframe
+for i in range(len(links)): # Iterates from zero to the length of the list list
+    try:                    # The try block lets you test a block of code for errors.
+        page = urlopen(links[i]).read()   # Searches for the i'th item from the list and opens it with urlib imported from the urllib.request module
+        data = bs(page, 'html.parser')    # Uses the BeautifulSoup html parser to load the 'page' url as soup data to  'data'
+        body = data.find('body')          # Finds the <body> tag in the soup and puts it into 'body'
+        script = body.find('script')      # Finds the <script...> and puts it into 'script'
         raw = script.text.strip().replace('window._sharedData =', '').replace(';', '')
+        # print("this is raw! ",raw)
         json_data=json.loads(raw)
         posts =json_data['entry_data']['PostPage'][0]['graphql']
         posts = json.dumps(posts)
@@ -58,8 +60,8 @@ for i in range(len(links)):
         x = pd.DataFrame.from_dict(json_normalize(posts), orient='columns')
         x.columns =  x.columns.str.replace("shortcode_media.", "")
         result=result.append(x)
-    except:
-        np.nan
+    except: # The except block lets you handle the error
+        np.nan # np.nan will return an NaN (null)
 # Just check for the duplicates
 result = result.drop_duplicates(subset = 'shortcode')
 result.index = range(len(result.index))
