@@ -1,4 +1,4 @@
-# Webscraping Instagram
+# Webscraping Instagram Tutorial
 
 A step-by-step guide to webscraping Instagram with Python
 
