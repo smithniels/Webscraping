@@ -20,7 +20,7 @@ print('Module Import = Done \n \n Start the next bit') #\n will create a new lin
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'dc' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'damn' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                    # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
