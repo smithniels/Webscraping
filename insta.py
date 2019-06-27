@@ -1,4 +1,7 @@
 '''
+TODO: Finish adding comments
+TODO: Spellcheck/Review existing comments
+
 Instagram #Hashtag Webscraper
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
