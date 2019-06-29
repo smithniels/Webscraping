@@ -5,8 +5,7 @@ https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-a
 
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
 
-
-TODO: Finish commenting to explain what the hell each line is doing. You know, for education. For the children...
+TODO: Finish commenting to explain what the hell each line is doing, for the children...
 '''
 
 print("start importing modules and things") # Prints output between quotation marks
@@ -19,10 +18,9 @@ import requests #^
 from selenium import webdriver # Searches and loads webdriver in the selenium module
 from urllib.request import urlopen          #^
 from pandas.io.json import json_normalize   #^
-from bs4 import BeautifulSoup as bs         # searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
+from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
 import pandas as pd, numpy as np            #^
-
-print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key
+print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key in a word document
 
 #part ONE (makes hashtag + opens instagram )
 
@@ -34,7 +32,6 @@ browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds t
                                                                        # All webdrivers can be found at: https://docs.seleniumhq.org/download/
                                                                        # You will need to download the corresponding webdriver for the browser you want to use
 browser.get('https://www.instagram.com/explore/tags/' +hashtag) # Load the page at the given url with the #Hashtag
-print("Here is the browser",browser)
 Pagelength = browser.execute_script("window.scrollTo(0, document.body.scrollHeight);") # Scrolls to the ZERO position (horizontal)
                                                                                        # Document.body.scrollHeight gets the height
 print('Part1 is complete')
@@ -49,7 +46,6 @@ script = body.find('span')       # Within the <body> tags in "body", find the <s
 for link in script.findAll('a'): # For the <span> tags in "script", find the <a..>
      if re.match("/p", link.get('href')):   # Searching for this format <a href="/p..."
         links.append('https://www.instagram.com'+link.get('href')) # Adds those ^ to the links links if true
-
 result = pd.DataFrame()     # Creates an empty dataframe
 for i in range(len(links)): # Iterates from zero to the length of the list list
     try:                    # The try block lets you test a block of code for errors.
@@ -76,11 +72,9 @@ print('Part2 is complete')
 
 result.index = range(len(result.index))
 directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"  # This is where the photos will be saved to
-
 for i in range(len(result)): #iterates through the length of the data frame
     r = requests.get(result['display_url'][i]) # Find display_url and download the respective jpeg from the result data frame
     with open(directory+result['shortcode'][i]+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
                     f.write(r.content)                             # With their respective shortcode
-
 print('Part3 is complete')
 print('Fin')
