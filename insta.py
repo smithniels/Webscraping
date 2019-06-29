@@ -1,18 +1,21 @@
 '''
-TODO: Finish adding comments
-TODO: Spellcheck/Review existing comments
-
 Instagram #Hashtag Webscraper
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
 
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
+
+
+TODO: Finish commenting to explain what the hell each line is doing. You know, for education. For the children...
 '''
 
 print("start importing modules and things") # Prints output between quotation marks
-import time # Imports the time module
+import time # Imports the module
 import re   #^
 import json #^
+import os   #^
+import requests #^
+
 from selenium import webdriver # Searches and loads webdriver in the selenium module
 from urllib.request import urlopen          #^
 from pandas.io.json import json_normalize   #^
@@ -23,7 +26,7 @@ print('Module Import = Done \n \n Start the next bit') #\n will create a new lin
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'damn' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'dog' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                    # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
@@ -54,34 +57,30 @@ for i in range(len(links)): # Iterates from zero to the length of the list list
         data = bs(page, 'html.parser')    # Uses the BeautifulSoup html parser to load the 'page' url as soup data to  'data'
         body = data.find('body')          # Finds the <body> tag in the soup and puts it into 'body'
         script = body.find('script')      # Finds the <script...> and puts it into 'script'
-        # print(script)
         raw = script.text.strip().replace('window._sharedData =', '').replace(';', '')
-        # print("this is raw! ",raw)
-        json_data=json.loads(raw)
-        posts =json_data['entry_data']['PostPage'][0]['graphql']
-        posts = json.dumps(posts)
-        posts = json.loads(posts)
+        json_data = json.loads(raw)       # json.loads() is turning the JSON data into a py object
+        #print("JSON_data"+json_data)
+        posts = json_data['entry_data']['PostPage'][0]['graphql'] # Within the json_data find entry_data then dive in until you find the graphql
+        posts = json.dumps(posts) # Encodes into JSON
+        posts = json.loads(posts) # Decodses JSon
         x = pd.DataFrame.from_dict(json_normalize(posts), orient='columns')
         x.columns =  x.columns.str.replace("shortcode_media.", "")
-        result=result.append(x)
+        result=result.append(x) # Add(append) x to the result variable
     except: # The except block lets you handle the error
         np.nan # np.nan will return an NaN (null)
-# Just check for the duplicates
-result = result.drop_duplicates(subset = 'shortcode')
+result = result.drop_duplicates(subset = 'shortcode') # Check for the duplicates # Looks for duplicates in the 'shortcode' column only
 result.index = range(len(result.index))
 print('Part2 is complete')
 
 #part THREE: This is the part where the images are loaded on your computah
 
-import os
-import requests
 result.index = range(len(result.index))
-directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"
+directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"  # This is where the photos will be saved to
 
-for i in range(len(result)):
-    r = requests.get(result['display_url'][i])
-    with open(directory+result['shortcode'][i]+".jpg", 'wb') as f:
-                    f.write(r.content)
+for i in range(len(result)): #iterates through the length of the data frame
+    r = requests.get(result['display_url'][i]) # Find display_url and download the respective jpeg from the result data frame
+    with open(directory+result['shortcode'][i]+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
+                    f.write(r.content)                             # With their respective shortcode
 
 print('Part3 is complete')
 print('Fin')
