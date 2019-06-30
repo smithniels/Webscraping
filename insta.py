@@ -8,23 +8,23 @@ This is a step by step guide for scraping instagram for images based off of the 
 TODO: Finish commenting to explain what the hell each line is doing, for the children...
 '''
 
-print("start importing modules and things") # Prints output between quotation marks
+print("Start importing modules and things") # Prints output between quotation marks
 import time     # Imports the ____ module
 import re       #^
 import json     #^
 import os       #^
 import requests #^
-
 from selenium import webdriver              # Searches and loads webdriver in the selenium module
 from urllib.request import urlopen          #^
 from pandas.io.json import json_normalize   #^
 from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
-import pandas as pd, numpy as np            #^
+import pandas as pd                         #^
+import numpy  as np                         #^
 print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key in a word document
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'Copenhagen' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'Denmark' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                     # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
@@ -56,7 +56,6 @@ for i in range(len(links)):               # Iterates from zero to the length of 
         raw = script.text.strip().replace('window._sharedData =', '').replace(';', '')
         json_data = json.loads(raw)       # json.loads() is turning the JSON data into a py object
         posts = json_data['entry_data']['PostPage'][0]['graphql'] # Within the json_data find entry_data then dive in until you find the graphql
-        print("These are posts \n"+ posts)
         posts = json.dumps(posts) # Encodes into JSON
         posts = json.loads(posts) # Decodses JSon
         x = pd.DataFrame.from_dict(json_normalize(posts))
@@ -73,7 +72,7 @@ result.index = range(len(result.index)) # range(x) creates a series of numbers f
 directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"  # This is where the photos will be saved to
 for i in range(len(result)):                                       #iterates through the length of the data frame
     r = requests.get(result['display_url'][i])                     # Find display_url and download the respective jpeg from the result data frame
-    with open(directory+result['shortcode'][i]+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
+    with open(directory+result['shortcode'][i]+ "_" +hashtag +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
                     f.write(r.content)                             # With their respective shortcode
 print('Part3 is complete')
 print('Fin')
