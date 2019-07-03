@@ -1,18 +1,20 @@
 '''
+Instagram Web Scraper
+
+# Modules to check out:
+#     log
+#     pillows
 Instagram #Hashtag Webscraper
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
-
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
-
 TODO: Finish commenting to explain what the hell each line is doing, for the children...
 '''
-
 print("Start importing modules and things") # Prints output between quotation marks
 import time     # Imports the ____ module
 import re       #^
 import json     #^
-from os import mkdirs       #^
+import os   #^
 import requests #^
 from selenium import webdriver              # Searches and loads webdriver in the selenium module
 from urllib.request import urlopen          #^
@@ -24,7 +26,7 @@ print('Module Import = Done \n \n Start the next bit') #\n will create a new lin
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'BFTC' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'Yolo' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                     # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
@@ -61,27 +63,21 @@ for i in range(len(links)):               # Iterates from zero to the length of 
         x = pd.DataFrame.from_dict(json_normalize(posts))
         x.columns =  x.columns.str.replace("shortcode_media.", "")
         result=result.append(x) # Add(append) x to the result
-    except:                     # The except block lets you handle the error
-        np.nan                  # np.nan will return an NaN (null)
+    except:       # The except block lets you handle the error
+        np.nan    # np.nan will return an NaN (null)
 result = result.drop_duplicates(subset = 'shortcode') # Check for the duplicates # Looks for duplicates in the 'shortcode' column only
-
 print('Part2 is complete')
 
 #part THREE: This is the part where the images are loaded on your computah
 result.index = range(len(result.index)) # range(x) creates a series of numbers from 0 to x
-
-
-# try:  #this path is going to need 'format', I think. I dunno. Python is hard. These are needed {} 
-#     os.mkdirs(r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"+hashtag)
-# except FileExistsError:
-#     pass
-
-
-
-directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images\new"  # This is where the photos will be saved to
+directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images"  # This is where the photos will be saved to
 for i in range(len(result)):                                       #iterates through the length of the data frame
     r = requests.get(result['display_url'][i])                     # Find display_url and download the respective jpeg from the result data frame
-    with open(directory + result['shortcode'][i]+ "_" +hashtag +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
+    # outfile = result['shortcode'][i]+ "_" +hashtag +".jpg"
+    # with open(os.path.join(directory, outfile), 'wb') as f:
+    #     f.writer(r.content)
+
+    with open(directory + '/' + result['shortcode'][i]+ "_" +hashtag +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
                     f.write(r.content)                             # With their respective shortcode
 print('Part3 is complete')
 print('Fin')
