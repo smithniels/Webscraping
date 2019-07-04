@@ -8,25 +8,33 @@ Instagram #Hashtag Webscraper
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
-TODO: Finish commenting to explain what the hell each line is doing, for the children...
+TODO: Create folder based on searched hashtag
+    set path
+    check if folder named #hashtag exists
+        if yes create a time stamped folder in #hashtag folder
+        else create folder named #hashtag
+            then create a time stamped folder in #hashtag folder
+TODO: Save a CSV Of JSON data into time stamped folder
+TODO: Put things into functions  & if __name__ == '__main__':
 '''
+# TODO: Finish commenting to explain what the hell each line is doing, for the children...
 print("Start importing modules and things") # Prints output between quotation marks
 import time     # Imports the ____ module
-import re       #^
-import json     #^
-import os   #^
-import requests #^
+import re
+import json
+import os
+import requests
 from selenium import webdriver              # Searches and loads webdriver in the selenium module
-from urllib.request import urlopen          #^
-from pandas.io.json import json_normalize   #^
+from urllib.request import urlopen
+from pandas.io.json import json_normalize
 from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
-import pandas as pd                         #^
-import numpy  as np                         #^
+import pandas as pd
+import numpy  as np
 print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key in a word document
 
 #part ONE (makes hashtag + opens instagram )
 
-hashtag = 'Yolo' # This assigns the #hashtag that will be searched for in Instagram
+hashtag = 'MS' # This assigns the #hashtag that will be searched for in Instagram
 print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                     # Print function with commas , or plus + signs
 browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
