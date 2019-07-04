@@ -1,10 +1,9 @@
 '''
-Instagram Web Scraper
+Instagram #Hashtag Webscraper
 
 # Modules to check out:
 #     log
 #     pillows
-Instagram #Hashtag Webscraper
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
@@ -64,10 +63,10 @@ for i in range(len(links)):               # Iterates from zero to the length of 
         body = data.find('body')          # Finds the <body> t  ag in the soup and puts it into 'body'
         script = body.find('script')      # Finds the <script...> and puts it into 'script'
         raw = script.text.strip().replace('window._sharedData =', '').replace(';', '')
-        json_data = json.loads(raw)       # json.loads() is turning the JSON data into a py object
+        json_data = json.loads(raw)      # json.loads() is turning the JSON data into a py object
         posts = json_data['entry_data']['PostPage'][0]['graphql'] # Within the json_data find entry_data then dive in until you find the graphql
-        posts = json.dumps(posts) # Encodes into JSON
-        posts = json.loads(posts) # Decodses JSon
+        posts = json.dumps(posts)        # Encodes into JSON
+        posts = json.loads(posts)        # Decodses JSon
         x = pd.DataFrame.from_dict(json_normalize(posts))
         x.columns =  x.columns.str.replace("shortcode_media.", "")
         result=result.append(x) # Add(append) x to the result
@@ -78,14 +77,14 @@ print('Part2 is complete')
 
 #part THREE: This is the part where the images are loaded on your computah
 result.index = range(len(result.index)) # range(x) creates a series of numbers from 0 to x
-directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images"  # This is where the photos will be saved to
-for i in range(len(result)):                                       #iterates through the length of the data frame
-    r = requests.get(result['display_url'][i])                     # Find display_url and download the respective jpeg from the result data frame
+directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images"  # This is where the photos will be saved to | The r is for "raw" file
+for i in range(len(result)):                    # Iterates through the length of the data frame
+    r = requests.get(result['display_url'][i])  # Find display_url and download the respective jpeg from the result data frame
     # outfile = result['shortcode'][i]+ "_" +hashtag +".jpg"
     # with open(os.path.join(directory, outfile), 'wb') as f:
     #     f.writer(r.content)
 
     with open(directory + '/' + result['shortcode'][i]+ "_" +hashtag +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
-                    f.write(r.content)                             # With their respective shortcode
+                    f.write(r.content)                                                    # With their respective shortcode
 print('Part3 is complete')
 print('Fin')
