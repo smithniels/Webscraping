@@ -10,8 +10,11 @@ This is a step by step guide for scraping instagram for images based off of the 
 
 TODO: Save a CSV Of JSON data into time stamped folder
 TODO: Put things into functions
+TODO: Duplicate images are being saved
+    Figure out what the unique identifer is
 '''
 # TODO: Finish commenting to explain what the hell each line is doing, for the children...
+# TODO: Why do l's keep being capitalized? This is definitely an Atom issue
 
 print("Start importing modules and things") # Prints output between quotation marks
 import json     # Imports the ____ module
@@ -25,14 +28,13 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
 import numpy  as np
 import pandas as pd
-hashtag = 'WashingtonDC'
+hashtag = 'Skeggs' # This assigns the #hashtag that will be searched for in Instagram
 timestamp = str(time.time())
 
-print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key in a word document
+print('Module Import is Complete') #\n will create a new line in the output. Like hitting the enter key in a word document
 
 def webscrapeIG():
     # part ONE (makes hashtag + opens instagram )
-    # This assigns the #hashtag that will be searched for in Instagram
     print('Searching for #' , hashtag) # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                         # Print function with commas , or plus + signs
     browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
@@ -88,10 +90,18 @@ def webscrapeIG():
         # with open(os.path.join(directory, outfile), 'wb') as f:
         #     f.writer(r.content)
 
-        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag + "_" + timestamp +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
+        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag + "_"+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
                         f.write(r.content)                                                     # With their respective shortcode
     print('Part 3 is complete')
     print('Fin')
 
 if __name__ == '__main__':
     webscrapeIG()
+
+'''
+Run Time
+29 sec 07/05/19 - 9:43 AM
+73 sec 07/05/19 - 9:45 AM
+67 sec 07/05/19 - 9:49 AM
+89 sec 07/05/19 - 9:51 AM
+'''
