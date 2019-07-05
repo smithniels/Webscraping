@@ -6,39 +6,42 @@ Instagram #Hashtag Webscraper
 #     pillows
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
+This is a step by step guide for scraping instagram for images based off of the inputted hashtag
+
 TODO: Save a CSV Of JSON data into time stamped folder
-TODO: Put things into functions  & if __name__ == '__main__':
+TODO: Put things into functions
 '''
 # TODO: Finish commenting to explain what the hell each line is doing, for the children...
 
 print("Start importing modules and things") # Prints output between quotation marks
-import time     # Imports the ____ module
-import re
-import json
+import json     # Imports the ____ module
 import os
+import re
 import time
 import requests
-from selenium import webdriver              # Searches and loads webdriver in the selenium module
+from pandas.io.json import json_normalize   # Searches and loads webdriver in the selenium module
+from selenium import webdriver
 from urllib.request import urlopen
-from pandas.io.json import json_normalize
 from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
-import pandas as pd
 import numpy  as np
+import pandas as pd
+hashtag = 'WashingtonDC'
+timestamp = str(time.time())
+
 print('Module Import = Done \n \n Start the next bit') #\n will create a new line in the output. Like hitting the enter key in a word document
 
 def webscrapeIG():
     # part ONE (makes hashtag + opens instagram )
-    hashtag = 'WashingtonDC'
- # This assigns the #hashtag that will be searched for in Instagram
-    print('Looking for >#',hashtag+"<") # Variabales can be included in print functions like this. remember to seperate the pieces of your
+    # This assigns the #hashtag that will be searched for in Instagram
+    print('Searching for #' , hashtag) # Variabales can be included in print functions like this. remember to seperate the pieces of your
                                         # Print function with commas , or plus + signs
     browser = webdriver.Chrome(r'C:\Users\19258\Desktop\chromedriver.exe') # Finds the webdriver.exe on the path provided
                                                                            # Selenium requires a driver to interface with the chosen browser
                                                                            # All webdrivers can be found at: https://docs.seleniumhq.org/download/
                                                                            # You will need to download the corresponding webdriver for the browser you want to use
-    browser.get('https://www.instagram.com/explore/tags/' +hashtag) # Load the page at the given url with the #Hashtag
+    browser.get('https://www.instagram.com/explore/tags/' + hashtag) # Load the page at the given url with the #Hashtag
     Pagelength = browser.execute_script("window.scrollTo(0, document.body.scrollHeight);") # Scrolls to the ZERO position (horizontal)
-    print('Part1 is complete')                                                             # Document.body.scrollHeight gets the height
+    print('Part 1 is complete')                                                             # Document.body.scrollHeight gets the height
 
 
     # part TWO (parse the html + adds ___ to links)
@@ -50,7 +53,7 @@ def webscrapeIG():
     script = body.find('span')                # Within the <body> tags in "body", find the <span> tags
     for link in script.findAll('a'):          # For the <span> tags in "script", find the <a..>
          if re.match("/p", link.get('href')): # Searching for this format <a href="/p..."
-            links.append('https://www.instagram.com'+link.get('href')) # Adds those ^ to the links links if true
+            links.append('https://www.instagram.com' + link.get('href')) # Adds those ^ to the links links if true
     result = pd.DataFrame()                   # Creates an empty dataframe
     for i in range(len(links)):               # Iterates from zero to the length of the list list
         try:                                  # The try block lets you test a block of code for errors.
@@ -69,19 +72,15 @@ def webscrapeIG():
         except:       # The except block lets you handle the error
             np.nan    # np.nan will return an NaN (null)
     result = result.drop_duplicates(subset = 'shortcode') # Check for the duplicates # Looks for duplicates in the 'shortcode' column only
-    print('Part2 is complete')
+    print('Part 2 is complete')
 
     # part THREE: This is the part where the images are loaded on your computah
-    timestamp = str(time.time())
     result.index = range(len(result.index)) # range(x) creates a series of numbers from 0 to x
     directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images"  # This is where the photos will be saved to | The r is for "raw" file
-
-    final_directory = os.path.join(directory, hashtag, timestamp)
+    final_directory = os.path.join(directory, hashtag)  #,timestamp)
     if not os.path.exists(final_directory):
         os.makedirs(final_directory,exist_ok=True)
-
     os.chdir(directory)
-    # os.mkdir('NoButActually')
     for i in range(len(result)):                    # Iterates through the length of the data frame
         r = requests.get(result['display_url'][i])  # Find display_url and download the respective jpeg from the result data frame
 
@@ -89,11 +88,10 @@ def webscrapeIG():
         # with open(os.path.join(directory, outfile), 'wb') as f:
         #     f.writer(r.content)
 
-        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
+        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag + "_" + timestamp +".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
                         f.write(r.content)                                                     # With their respective shortcode
-    print('Part3 is complete')
+    print('Part 3 is complete')
     print('Fin')
-    print(os.getcwd()) # currently saving to Code folder
 
 if __name__ == '__main__':
     webscrapeIG()
