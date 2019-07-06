@@ -4,6 +4,7 @@ Instagram #Hashtag Webscraper
 # Modules to check out:
 #     log
 #     pillows
+
 Original code was written by: Srujana Takkallapally @srujana.rao2
 https://medium.com/@srujana.rao2/scraping-instagram-with-python-using-selenium-and-beautiful-soup-8b72c186a058
 This is a step by step guide for scraping instagram for images based off of the inputted hashtag
@@ -22,14 +23,15 @@ import os
 import re
 import time
 import requests
-from pandas.io.json import json_normalize   # Searches and loads webdriver in the selenium module
+import pprint
+from pandas.io.json import json_normalize   # Searches the ___ module and imports _____
 from selenium import webdriver
 from urllib.request import urlopen
-from bs4 import BeautifulSoup as bs         # Searches and loads BeautifulSoup in the bs4 and gives it the name(alias) "bs"
+from bs4 import BeautifulSoup as bs         # loads ____ module and imports ____ giving it the alias _____
 import numpy  as np
 import pandas as pd
-hashtag = 'Skeggs' # This assigns the #hashtag that will be searched for in Instagram
-timestamp = str(time.time())
+
+hashtag = 'Boop' # This assigns the #hashtag that will be searched for in Instagram
 
 print('Module Import is Complete') #\n will create a new line in the output. Like hitting the enter key in a word document
 
@@ -48,7 +50,7 @@ def webscrapeIG():
 
     # part TWO (parse the html + adds ___ to links)
 
-    links = []                                  # Creates an empty list "links"
+    links = []                                # Creates an empty list "links"
     source = browser.page_source              # Open the source page
     data = bs(source, 'html.parser')          # Use beautiful soup to parse it.
     body = data.find('body')                  # Search through BeautifulSoup file for <body> tags
@@ -57,8 +59,10 @@ def webscrapeIG():
          if re.match("/p", link.get('href')): # Searching for this format <a href="/p..."
             links.append('https://www.instagram.com' + link.get('href')) # Adds those ^ to the links links if true
     result = pd.DataFrame()                   # Creates an empty dataframe
+    c = 0
     for i in range(len(links)):               # Iterates from zero to the length of the list list
         try:                                  # The try block lets you test a block of code for errors.
+            c +=1
             page = urlopen(links[i]).read()   # Searches for the i'th item from the list and opens it with urlib imported from the urllib.request module
             data = bs(page, 'html.parser')    # Uses the BeautifulSoup html parser to load the 'page' url as soup data to  'data'
             body = data.find('body')          # Finds the <body> t  ag in the soup and puts it into 'body'
@@ -71,15 +75,26 @@ def webscrapeIG():
             x = pd.DataFrame.from_dict(json_normalize(posts))
             x.columns =  x.columns.str.replace("shortcode_media.", "")
             result=result.append(x,sort = True) # Add(append) x to the result
+
+
+            # with open('testthree.csv','w',newline = '') as c:
+            #     print(posts)
+            #     c.write(posts)
+
+
+
         except:       # The except block lets you handle the error
             np.nan    # np.nan will return an NaN (null)
-    result = result.drop_duplicates(subset = 'shortcode') # Check for the duplicates # Looks for duplicates in the 'shortcode' column only
+    result = result.drop_duplicates(subset = 'shortcode') # Check for the duplicates # Looks for duplicates in the 'shortcode' columnx` only
+    print(c, " Images Found")
     print('Part 2 is complete')
 
     # part THREE: This is the part where the images are loaded on your computah
+    timestamp = str(time.time())
     result.index = range(len(result.index)) # range(x) creates a series of numbers from 0 to x
     directory= r"C:\Users\19258\Desktop\code\python_test_code\scrape\images"  # This is where the photos will be saved to | The r is for "raw" file
-    final_directory = os.path.join(directory, hashtag)  #,timestamp)
+    final_directory = os.path.join(directory, hashtag,timestamp)
+
     if not os.path.exists(final_directory):
         os.makedirs(final_directory,exist_ok=True)
     os.chdir(directory)
@@ -89,9 +104,9 @@ def webscrapeIG():
         # outfile = result['shortcode'][i]+ "_" +hashtag +".jpg"
         # with open(os.path.join(directory, outfile), 'wb') as f:
         #     f.writer(r.content)
-
-        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag + "_"+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binary
-                        f.write(r.content)                                                     # With their respective shortcode
+        with open(final_directory + '/' + result['shortcode'][i]+ "_" + hashtag + "_"+".jpg", 'wb') as f: # Save the images to the directory folder      # 'wb' stands for write binar
+                        f.write(r.content)   # With their respective shortcode
+    print(os.getcwd())
     print('Part 3 is complete')
     print('Fin')
 
@@ -99,9 +114,15 @@ if __name__ == '__main__':
     webscrapeIG()
 
 '''
+Open CSV --> Write JSON data to CSV --> Save the CSV
+'''
+
+'''
 Run Time
 29 sec 07/05/19 - 9:43 AM
 73 sec 07/05/19 - 9:45 AM
 67 sec 07/05/19 - 9:49 AM
 89 sec 07/05/19 - 9:51 AM
+45 sec 07/05/19 - 5:02 PM
+58 sec 07/05/19 - 8:40 AM
 '''
